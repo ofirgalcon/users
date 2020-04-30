@@ -10,6 +10,7 @@ table:
     i18n_header: serial
   - {i18n_header: users.record_name, column: users.record_name}
   - {i18n_header: users.real_name, column: users.real_name}
+  - {i18n_header: users.unique_id, column: users.unique_id}
   - {i18n_header: users.password_hint, column: users.password_hint}
   - {i18n_header: users.generated_uuid, column: users.generated_uuid}
   - {i18n_header: users.home_directory, column: users.home_directory}
@@ -17,7 +18,6 @@ table:
   - {i18n_header: users.administrator, column: users.administrator, formatter: formatUsersYesNoSSH}
   - {i18n_header: users.ssh_access, column: users.ssh_access, formatter: formatUsersYesNoSSH}
   - {i18n_header: users.screenshare_access, column: users.screenshare_access, formatter: formatUsersYesNoSSH}
-  - {i18n_header: users.unique_id, column: users.unique_id}
   - {i18n_header: users.user_shell, column: users.user_shell}
   - {i18n_header: users.last_login_timestamp, column: users.last_login_timestamp, formatter: formatUsersTime}
   - {i18n_header: users.creation_time, column: users.creation_time, formatter: formatUsersTime}
