@@ -1,0 +1,20 @@
+client_tabs:
+    users-tab:
+        view: users_tab
+        i18n: users.users
+        badge: users-cnt
+reports:
+    users_report:
+        view: users_report
+        i18n: users.reporttitle
+listings:
+    users:
+        view: users_listing
+        i18n: users.users
+widgets:
+    users_admins:
+        view: users_admins_widget
+    users_ssh:
+        view: users_ssh_widget
+    users_screensharing:
+        view: users_screensharing_widget
