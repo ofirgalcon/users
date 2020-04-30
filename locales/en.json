@@ -11,6 +11,7 @@
     "group_memership": "Group Membership",
     "administrator": "Administrator",
     "ssh_access": "SSH Access",
+    "screenshare_access": "Screen Sharing Access",
     "unique_id": "UID",
     "user_shell": "User Shell",
     "meta_record_name": "OU Record Name",
