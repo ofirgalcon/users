@@ -14,6 +14,9 @@ class Users_controller extends Module_controller
 	{
 		// Store module path
 		$this->module_path = dirname(__FILE__);
+        
+        // Add local config
+        configAppendFile(__DIR__ . '/config.php');
 	}
 
 	/**
@@ -63,13 +66,35 @@ class Users_controller extends Module_controller
    }
 
     /**
+     * REST API for retrieving local admin users count for widget
+     * @tuxudo
+     *
+     **/
+     public function get_local_admin()
+     {
+        $threshold = (int) conf('users_local_admin_threshold');
+         
+        jsonView(
+            Users_model::selectRaw('users.serial_number, machine.computer_name, COUNT(users.record_name) AS count')
+                ->join('machine', 'machine.serial_number', '=', 'users.serial_number')
+                ->where('administrator', '=', 1)
+                ->having('count', '>=', $threshold)
+                ->filter()
+                ->orderBy('count', 'desc')
+                ->groupBy('machine.computer_name', 'serial_number')
+                ->get()
+                ->toArray()             
+        );
+   }
+
+    /**
      * REST API for retrieving admin users for widget
      * @tuxudo
      *
      **/
      public function admin_users()
      {
-        jsonView(
+         jsonView(
             Users_model::selectRaw('record_name, COUNT(record_name) AS count')
                 ->where('administrator', '=', 1)
                 ->filter()
@@ -77,7 +102,7 @@ class Users_controller extends Module_controller
                 ->orderBy('count', 'desc')
                 ->get()
                 ->toArray()
-        );
+         );
    }
 
 	/**
@@ -86,12 +111,12 @@ class Users_controller extends Module_controller
      **/
     public function get_tab_data($serial_number = '')
     {
-       jsonView(
-            Users_model::selectRaw('record_name, real_name, unique_id, password_hint, generated_uuid, home_directory, primary_group_id, administrator, ssh_access, screenshare_access, user_shell, last_login_timestamp, creation_time, password_last_set_time, failed_login_count, failed_login_timestamp, password_history_depth, linked_full_name, linked_timestamp, group_memership, meta_record_name, email_address, smb_group_rid, smb_home, smb_home_drive, smb_primary_group_sid, smb_sid, smb_script_path, smb_password_last_set, original_node_name, primary_nt_domain, copy_timestamp')
+         jsonView(
+            Users_model::selectRaw('record_name, real_name, unique_id, password_hint, home_directory, primary_group_id, administrator, ssh_access, screenshare_access, user_shell, generated_uuid, last_login_timestamp, creation_time, password_last_set_time, failed_login_count, failed_login_timestamp, password_history_depth, linked_full_name, linked_timestamp, group_memership, meta_record_name, email_address, smb_group_rid, smb_home, smb_home_drive, smb_primary_group_sid, smb_sid, smb_script_path, smb_password_last_set, original_node_name, primary_nt_domain, copy_timestamp')
                 ->where('users.serial_number', $serial_number)
                 ->filter()
                 ->get()
                 ->toArray()
-        );
+         );
     }
 } // End class Users_controller

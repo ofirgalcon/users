@@ -39,5 +39,9 @@
     "no_screensharing_users": "No Screen Sharing Users",
     "screensharing_users": "Screen Sharing Allowed Users",
     "no_admins": "No Administrator",
-    "admin_users": "Administrator Accounts"
+    "admin_users": "Administrator Accounts",
+    "no_local_admins": "No Local Admins",
+    "local_admins": "Local Admins",
+    "local_administrators": "Local Administrators",
+    "current_user": "Current User"
 }

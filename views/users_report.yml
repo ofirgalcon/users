@@ -1,4 +1,6 @@
 row1:
-  users_admins:
-  users_ssh:
-  users_screensharing:
+    users_admins:
+    users_ssh:
+    users_screensharing:
+row2:
+    users_local_admins:

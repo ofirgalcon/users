@@ -11,10 +11,6 @@ $(document).on('appReady', function(){
         if(!data[0]){
             $('#users-msg').text(i18n.t('no_data'));
             $('#users-header').removeClass('hide');
-            $('#mr-users-table').append($('<tr>')
-                                            .append($('<td>')
-                                                .attr('colspan', 2)
-                                                .text(i18n.t('no_data'))))
 
             // Update the tab users count
             $('#users-cnt').text("");
@@ -28,6 +24,8 @@ $(document).on('appReady', function(){
             // Set count of user accounts
             $('#users-cnt').text(data.length);
 
+            var local_admins = ''
+
             $.each(data, function(i,d){
                 // Generate rows from data
                 var rows = ''
@@ -39,17 +37,18 @@ $(document).on('appReady', function(){
                     }
 
                     else if((prop == 'ssh_access' || prop == 'screenshare_access') && d[prop] == 1){
-                       rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-danger">'+i18n.t('on')+'</span></td></tr>';
+                        rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-danger">'+i18n.t('on')+'</span></td></tr>';
                     }
                     else if((prop == 'ssh_access' || prop == 'screenshare_access') && d[prop] == 0){
-                       rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-success">'+i18n.t('off')+'</span></td></tr>';
+                        rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-success">'+i18n.t('off')+'</span></td></tr>';
                     }
                     
                     else if((prop == 'administrator') && d[prop] == 1){
-                       rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-danger">'+i18n.t('yes')+'</span></td></tr>';
+                        rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-danger">'+i18n.t('yes')+'</span></td></tr>';
+                        local_admins = local_admins + d['record_name'] + " (" + d['unique_id'] + ") "
                     }
                     else if((prop == 'administrator') && d[prop] == 0){
-                       rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-success">'+i18n.t('no')+'</span></td></tr>';
+                        rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-success">'+i18n.t('no')+'</span></td></tr>';
                     }
 
                     else if((prop == 'copy_timestamp' || prop == 'creation_time' || prop == 'smb_password_last_set' || prop == 'linked_timestamp' || prop == 'failed_login_timestamp' || prop == 'password_last_set_time' || prop == 'last_login_timestamp') && parseInt(d[prop]) > 0){
@@ -57,7 +56,7 @@ $(document).on('appReady', function(){
                         rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span title="'+moment(date).fromNow()+'">'+moment(date).format('llll')+'</span></td></tr>';
                     }
                     else {
-                       rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td>'+d[prop]+'</td></tr>';
+                        rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td>'+d[prop]+'</td></tr>';
                     }
                 }
 
@@ -72,6 +71,9 @@ $(document).on('appReady', function(){
                         .append($('<tbody>')
                             .append(rows))))
             })
+
+            // Appent local admins to client detail table
+            $('#mr-users-table').append('<tr><th>'+i18n.t('users.local_administrators')+'</th><td>'+local_admins+'</td></tr>')
         }
 	});
 });

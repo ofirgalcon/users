@@ -1,3 +1,6 @@
+detail_widgets:
+    users_detail:
+        view: users_detail_widget
 client_tabs:
     users-tab:
         view: users_tab
@@ -18,3 +21,5 @@ widgets:
         view: users_ssh_widget
     users_screensharing:
         view: users_screensharing_widget
+    users_local_admins:
+        view: users_local_admins_widget

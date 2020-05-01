@@ -1,0 +1,9 @@
+type: scrollbox
+widget_id: users-local-admins-widget
+api_url: /module/users/get_local_admin
+i18n_title: users.local_admins
+icon: fa-user-secret
+listing_link: /show/listing/users/users
+search_key: computer_name
+i18nEmptyResult: users.no_local_admins
+badge: count
