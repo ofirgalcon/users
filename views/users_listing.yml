@@ -19,14 +19,14 @@ table:
   - {i18n_header: users.screenshare_access, column: users.screenshare_access, formatter: formatUsersYesNoSSH}
   - {i18n_header: users.user_shell, column: users.user_shell}
   - {i18n_header: users.generated_uuid, column: users.generated_uuid}
-  - {i18n_header: users.last_login_timestamp, column: users.last_login_timestamp, formatter: formatUsersTime}
-  - {i18n_header: users.creation_time, column: users.creation_time, formatter: formatUsersTime}
-  - {i18n_header: users.password_last_set_time, column: users.password_last_set_time, formatter: formatUsersTime}
+  - {i18n_header: users.last_login_timestamp, column: users.last_login_timestamp, formatter: timestampToMoment}
+  - {i18n_header: users.creation_time, column: users.creation_time, formatter: timestampToMoment}
+  - {i18n_header: users.password_last_set_time, column: users.password_last_set_time, formatter: timestampToMoment}
   - {i18n_header: users.failed_login_count, column: users.failed_login_count}
-  - {i18n_header: users.failed_login_timestamp, column: users.failed_login_timestamp, formatter: formatUsersTime}
+  - {i18n_header: users.failed_login_timestamp, column: users.failed_login_timestamp, formatter: timestampToMoment}
   - {i18n_header: users.password_history_depth, column: users.password_history_depth}
   - {i18n_header: users.linked_full_name, column: users.linked_full_name}
-  - {i18n_header: users.linked_timestamp, column: users.linked_timestamp, formatter: formatUsersTime}
+  - {i18n_header: users.linked_timestamp, column: users.linked_timestamp, formatter: timestampToMoment}
   - {i18n_header: users.group_memership, column: users.group_memership}
   - {i18n_header: users.meta_record_name, column: users.meta_record_name}
   - {i18n_header: users.email_address, column: users.email_address}
@@ -36,7 +36,7 @@ table:
   - {i18n_header: users.smb_primary_group_sid, column: users.smb_primary_group_sid}
   - {i18n_header: users.smb_sid, column: users.smb_sid}
   - {i18n_header: users.smb_script_path, column: users.smb_script_path}
-  - {i18n_header: users.smb_password_last_set, column: users.smb_password_last_set, formatter: formatUsersTime}
+  - {i18n_header: users.smb_password_last_set, column: users.smb_password_last_set, formatter: timestampToMoment}
   - {i18n_header: users.original_node_name, column: users.original_node_name}
   - {i18n_header: users.primary_nt_domain, column: users.primary_nt_domain}
-  - {i18n_header: users.copy_timestamp, column: users.copy_timestamp, formatter: formatUsersTime}
+  - {i18n_header: users.copy_timestamp, column: users.copy_timestamp, formatter: timestampToMoment}
