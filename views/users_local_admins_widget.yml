@@ -4,6 +4,6 @@ api_url: /module/users/get_local_admin
 i18n_title: users.local_admins
 icon: fa-user-secret
 listing_link: /show/listing/users/users
-search_key: computer_name
+search_key: serial_number
 i18nEmptyResult: users.no_local_admins
 badge: count
