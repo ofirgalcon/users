@@ -81,7 +81,7 @@ class Users_controller extends Module_controller
                 ->having('count', '>=', $threshold)
                 ->filter()
                 ->orderBy('count', 'desc')
-                ->groupBy('machine.computer_name', 'serial_number')
+                ->groupBy('machine.computer_name', 'users.serial_number')
                 ->get()
                 ->toArray()             
         );
