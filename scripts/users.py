@@ -30,7 +30,7 @@ def get_groups_info():
                             stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (output, unused_error) = proc.communicate()
-    
+
     try:
         groups_pl = plistlib.readPlistFromString(output)
 
@@ -39,14 +39,14 @@ def get_groups_info():
         for group in groups_pl:
             if "dsAttrTypeStandard:GroupMembership" in group:
                 for group_member in group["dsAttrTypeStandard:GroupMembership"]:
-                    if group_member.startswith('_'):
+                    if group_member.startswith('_') or group_member.startswith('netboot') or group_member.startswith('root'):
                         # Skip service accounts
                         continue
 
                     # Get groups for users
-                    if group_member in group_data:
+                    if group_member in group_data and "dsAttrTypeStandard:RealName" in group:
                         group_data[group_member] = group_data[group_member] + ", " + group["dsAttrTypeStandard:RealName"][0]
-                    else: 
+                    elif "dsAttrTypeStandard:RealName" in group: 
                         group_data[group_member] = group["dsAttrTypeStandard:RealName"][0]
 
         return group_data
