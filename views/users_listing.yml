@@ -8,35 +8,35 @@ table:
     tab_link: users-tab
   - column: reportdata.serial_number
     i18n_header: serial
-  - {i18n_header: users.record_name, column: users.record_name}
-  - {i18n_header: users.real_name, column: users.real_name}
-  - {i18n_header: users.unique_id, column: users.unique_id}
-  - {i18n_header: users.password_hint, column: users.password_hint}
-  - {i18n_header: users.home_directory, column: users.home_directory}
-  - {i18n_header: users.primary_group_id, column: users.primary_group_id}
-  - {i18n_header: users.administrator, column: users.administrator, formatter: formatUsersYesNoSSH}
-  - {i18n_header: users.ssh_access, column: users.ssh_access, formatter: formatUsersYesNoSSH}
-  - {i18n_header: users.screenshare_access, column: users.screenshare_access, formatter: formatUsersYesNoSSH}
-  - {i18n_header: users.user_shell, column: users.user_shell}
-  - {i18n_header: users.generated_uuid, column: users.generated_uuid}
-  - {i18n_header: users.last_login_timestamp, column: users.last_login_timestamp, formatter: timestampToMoment}
-  - {i18n_header: users.creation_time, column: users.creation_time, formatter: timestampToMoment}
-  - {i18n_header: users.password_last_set_time, column: users.password_last_set_time, formatter: timestampToMoment}
-  - {i18n_header: users.failed_login_count, column: users.failed_login_count}
-  - {i18n_header: users.failed_login_timestamp, column: users.failed_login_timestamp, formatter: timestampToMoment}
-  - {i18n_header: users.password_history_depth, column: users.password_history_depth}
-  - {i18n_header: users.linked_full_name, column: users.linked_full_name}
-  - {i18n_header: users.linked_timestamp, column: users.linked_timestamp, formatter: timestampToMoment}
-  - {i18n_header: users.group_memership, column: users.group_memership}
-  - {i18n_header: users.meta_record_name, column: users.meta_record_name}
-  - {i18n_header: users.email_address, column: users.email_address}
-  - {i18n_header: users.smb_group_rid, column: users.smb_group_rid}
-  - {i18n_header: users.smb_home, column: users.smb_home}
-  - {i18n_header: users.smb_home_drive, column: users.smb_home_drive}
-  - {i18n_header: users.smb_primary_group_sid, column: users.smb_primary_group_sid}
-  - {i18n_header: users.smb_sid, column: users.smb_sid}
-  - {i18n_header: users.smb_script_path, column: users.smb_script_path}
-  - {i18n_header: users.smb_password_last_set, column: users.smb_password_last_set, formatter: timestampToMoment}
-  - {i18n_header: users.original_node_name, column: users.original_node_name}
-  - {i18n_header: users.primary_nt_domain, column: users.primary_nt_domain}
-  - {i18n_header: users.copy_timestamp, column: users.copy_timestamp, formatter: timestampToMoment}
+  - {i18n_header: users.record_name, column: local_users.record_name}
+  - {i18n_header: users.real_name, column: local_users.real_name}
+  - {i18n_header: users.unique_id, column: local_users.unique_id}
+  - {i18n_header: users.password_hint, column: local_users.password_hint}
+  - {i18n_header: users.home_directory, column: local_users.home_directory}
+  - {i18n_header: users.primary_group_id, column: local_users.primary_group_id}
+  - {i18n_header: users.administrator, column: local_users.administrator, formatter: formatUsersYesNoSSH}
+  - {i18n_header: users.ssh_access, column: local_users.ssh_access, formatter: formatUsersYesNoSSH}
+  - {i18n_header: users.screenshare_access, column: local_users.screenshare_access, formatter: formatUsersYesNoSSH}
+  - {i18n_header: users.user_shell, column: local_users.user_shell}
+  - {i18n_header: users.generated_uuid, column: local_users.generated_uuid}
+  - {i18n_header: users.last_login_timestamp, column: local_users.last_login_timestamp, formatter: timestampToMoment}
+  - {i18n_header: users.creation_time, column: local_users.creation_time, formatter: timestampToMoment}
+  - {i18n_header: users.password_last_set_time, column: local_users.password_last_set_time, formatter: timestampToMoment}
+  - {i18n_header: users.failed_login_count, column: local_users.failed_login_count}
+  - {i18n_header: users.failed_login_timestamp, column: local_users.failed_login_timestamp, formatter: timestampToMoment}
+  - {i18n_header: users.password_history_depth, column: local_users.password_history_depth}
+  - {i18n_header: users.linked_full_name, column: local_users.linked_full_name}
+  - {i18n_header: users.linked_timestamp, column: local_users.linked_timestamp, formatter: timestampToMoment}
+  - {i18n_header: users.group_memership, column: local_users.group_memership}
+  - {i18n_header: users.meta_record_name, column: local_users.meta_record_name}
+  - {i18n_header: users.email_address, column: local_users.email_address}
+  - {i18n_header: users.smb_group_rid, column: local_users.smb_group_rid}
+  - {i18n_header: users.smb_home, column: local_users.smb_home}
+  - {i18n_header: users.smb_home_drive, column: local_users.smb_home_drive}
+  - {i18n_header: users.smb_primary_group_sid, column: local_users.smb_primary_group_sid}
+  - {i18n_header: users.smb_sid, column: local_users.smb_sid}
+  - {i18n_header: users.smb_script_path, column: local_users.smb_script_path}
+  - {i18n_header: users.smb_password_last_set, column: local_users.smb_password_last_set, formatter: timestampToMoment}
+  - {i18n_header: users.original_node_name, column: local_users.original_node_name}
+  - {i18n_header: users.primary_nt_domain, column: local_users.primary_nt_domain}
+  - {i18n_header: users.copy_timestamp, column: local_users.copy_timestamp, formatter: timestampToMoment}

@@ -4,7 +4,7 @@ use munkireport\models\MRModel as Eloquent;
 
 class Users_model extends Eloquent
 {
-    protected $table = 'users';
+    protected $table = 'local_users';
 
     protected $fillable = [
 		'serial_number',
