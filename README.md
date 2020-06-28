@@ -8,6 +8,8 @@ Users module for MunkiReport. Gathers information about user accounts on the Mac
 Table Schema
 -----
 
+Table name: local_users
+
 Database:
 * real_name - varchar(255) - Full username
 * ard_priv - varchar(255) - ARD permissions bit
