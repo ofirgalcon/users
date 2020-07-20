@@ -46,4 +46,12 @@ Database:
 * linked_full_name - varchar(255) - Linked Apple ID
 * linked_timestamp - bigint - Timestamp of when Apple ID was linked to account
 
+Configuration
+-------------
 
+Users Local Admin Threshold Value:  
+This value specifies the minimum number of local admin accounts needed to
+list the computer in the Users Local Admin Report.  Default is 2.
+```
+USERS_LOCAL_ADMIN_THRESHOLD=2
+```
