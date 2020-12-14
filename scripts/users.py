@@ -60,7 +60,7 @@ def process_user_info(all_users,groups_info):
     for user in all_users:
 
         # Skip service accounts
-        if 'dsAttrTypeStandard:UserShell' not in user.keys() or user['dsAttrTypeStandard:UserShell'][0] == "/usr/bin/false" or user['dsAttrTypeStandard:NFSHomeDirectory'][0] == "/var/setup" or user['dsAttrTypeStandard:NFSHomeDirectory'][0] == "/var/spool/uucp" or user['dsAttrTypeStandard:RecordName'][0] == "root":
+        if 'dsAttrTypeStandard:UserShell' not in user.keys() or user['dsAttrTypeStandard:UserShell'][0] == "/usr/bin/false" or 'dsAttrTypeStandard:NFSHomeDirectory' not in user.keys() or user['dsAttrTypeStandard:NFSHomeDirectory'][0] == "/var/setup" or user['dsAttrTypeStandard:NFSHomeDirectory'][0] == "/var/spool/uucp" or user['dsAttrTypeStandard:RecordName'][0] == "root":
             continue
 
         user_atts = {}
