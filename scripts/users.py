@@ -11,7 +11,7 @@ import time
 def get_users_info():
 
     # Get all users info as plist
-    cmd = ['dscl', '-plist', '.', '-readall', '/Users']
+    cmd = ['/usr/bin/dscl', '-plist', '.', '-readall', '/Users']
     proc = subprocess.Popen(cmd, shell=False, bufsize=-1,
                             stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -21,11 +21,11 @@ def get_users_info():
         return plistlib.readPlistFromString(output)
     except Exception:
         return {}
-    
-def get_groups_info():
+
+def get_group_names():
 
     # Get all groups info as plist
-    cmd = ['dscl', '-plist', '.', '-readall', '/Groups']
+    cmd = ['/usr/bin/dscl', '-plist', '.', '-readall', '/Groups']
     proc = subprocess.Popen(cmd, shell=False, bufsize=-1,
                             stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -34,27 +34,21 @@ def get_groups_info():
     try:
         groups_pl = plistlib.readPlistFromString(output)
 
-        group_data = {}
+        group_names = {}
 
+        # Process all groups to make translate array
         for group in groups_pl:
-            if "dsAttrTypeStandard:GroupMembership" in group:
-                for group_member in group["dsAttrTypeStandard:GroupMembership"]:
-                    if group_member.startswith('_') or group_member.startswith('netboot') or group_member.startswith('root'):
-                        # Skip service accounts
-                        continue
 
-                    # Get groups for users
-                    if group_member in group_data and "dsAttrTypeStandard:RealName" in group:
-                        group_data[group_member] = group_data[group_member] + ", " + group["dsAttrTypeStandard:RealName"][0]
-                    elif "dsAttrTypeStandard:RealName" in group: 
-                        group_data[group_member] = group["dsAttrTypeStandard:RealName"][0]
+            # Process each group record name, some of more than one record name
+            for record_name in group["dsAttrTypeStandard:RecordName"]:
+                group_names.update({record_name: group["dsAttrTypeStandard:RealName"][0].rstrip()})
 
-        return group_data
+        return group_names
 
     except Exception:
         return {}
 
-def process_user_info(all_users,groups_info):
+def process_user_info(all_users,group_names):
     out = []
 
     for user in all_users:
@@ -84,9 +78,23 @@ def process_user_info(all_users,groups_info):
             elif user_att == 'dsAttrTypeStandard:RecordName':
                 user_atts['record_name'] = user[user_att][0]
 
-                # Process groups
+                # Process user's groups
                 try:
-                    user_atts['group_memership'] = ", ".join(sorted(groups_info[user_atts['record_name']].split(', ')))
+
+                    # Get groups from id command
+                    cmd = ['/usr/bin/id', '-Gn', user['dsAttrTypeStandard:RecordName'][0]]
+                    proc = subprocess.Popen(cmd, shell=False, bufsize=-1,
+                                            stdin=subprocess.PIPE,
+                                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    (output, unused_error) = proc.communicate()
+
+                    groups_list = []
+
+                    # Translate each group to real name
+                    for group in output.split(' '):
+                        groups_list.append(group_names[group.rstrip()])
+
+                    user_atts['group_memership'] = ", ".join(sorted(groups_list))
 
                     # Check for administrator
                     if "Administrators" in user_atts['group_memership']:
@@ -95,20 +103,20 @@ def process_user_info(all_users,groups_info):
                         user_atts['administrator'] = 0
 
                     # Check for SSH
-                    if "SSH Service ACL" in user_atts['group_memership']:
+                    if "SSH Service" in user_atts['group_memership']:
                         user_atts['ssh_access'] = 1
                     else:
                         user_atts['ssh_access'] = 0
 
                     # Check for Screensharing
-                    if "Screensharing Service ACL" in user_atts['group_memership']:
+                    if "Screensharing Service" in user_atts['group_memership']:
                         user_atts['screenshare_access'] = 1
                     else:
                         user_atts['screenshare_access'] = 0
 
                 except:
                     user_atts['group_memership'] = ""
-                
+
             elif user_att == 'dsAttrTypeStandard:UniqueID':
                 user_atts['unique_id'] = user[user_att][0]
             elif user_att == 'dsAttrTypeStandard:UserShell':
@@ -183,7 +191,7 @@ def main():
 
     # Get results
     result = dict()
-    result = process_user_info(get_users_info(),get_groups_info())
+    result = process_user_info(get_users_info(),get_group_names())
 
     # Write users results to cache
     cachedir = '%s/cache' % os.path.dirname(os.path.realpath(__file__))
