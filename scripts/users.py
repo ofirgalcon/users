@@ -8,6 +8,12 @@ import sys
 from datetime import datetime
 import time
 
+sys.path.insert(0, '/usr/local/munki')
+sys.path.insert(0, '/usr/local/munkireport')
+
+from munkilib import FoundationPlist
+from Foundation import CFPreferencesCopyAppValue
+
 def get_users_info():
 
     # Get all users info as plist
@@ -67,7 +73,7 @@ def process_user_info(all_users,group_names):
                 user_atts['ard_priv'] = user[user_att][0]
             elif user_att == 'dsAttrTypeStandard:AppleMetaNodeLocation':
                 user_atts['node_location'] = user[user_att][0]
-            elif user_att == 'dsAttrTypeStandard:AuthenticationHint':
+            elif user_att == 'dsAttrTypeStandard:AuthenticationHint' and user_account_hints_enabled():
                 user_atts['password_hint'] = user[user_att][0]
             elif user_att == 'dsAttrTypeStandard:GeneratedUID':
                 user_atts['generated_uuid'] = user[user_att][0]
@@ -180,6 +186,9 @@ def process_user_info(all_users,group_names):
 
         out.append(user_atts)
     return out
+
+def user_account_hints_enabled():
+    return CFPreferencesCopyAppValue('user_account_hints_enabled', 'MunkiReport')
 
 def main():
     """Main"""

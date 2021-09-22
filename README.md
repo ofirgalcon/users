@@ -3,6 +3,9 @@ Users module
 
 Users module for MunkiReport. Gathers information about user accounts on the Mac.
 
+Client Preferences
+-----
+It is possible to enable the collection of user account hints on clients using the preference domain MunkiReport with boolean key `user_account_hints_enabled` set to `true`. Alternatively, you can run `sudo defaults write /Library/Preferences/MunkiReport.plist user_account_hints_enabled -bool true` on the client.
 
 
 Table Schema
