@@ -103,7 +103,7 @@ def process_user_info(all_users,group_names):
                     user_atts['group_memership'] = ", ".join(sorted(groups_list))
 
                     # Check for administrator
-                    if "Administrators" in user_atts['group_memership']:
+                    if "Administrators" in groups_list:
                         user_atts['administrator'] = 1
                     else:
                         user_atts['administrator'] = 0
