@@ -48,7 +48,8 @@ def get_group_names():
             # Process each group record name, some of more than one record name
             if "dsAttrTypeStandard:RealName" in group:
                 for record_name in group["dsAttrTypeStandard:RecordName"]:
-                    group_names.update({record_name: group["dsAttrTypeStandard:RealName"][0].rstrip()})                   
+                    if "Public Folder" not in group["dsAttrTypeStandard:RealName"][0].rstrip():
+                        group_names.update({record_name: group["dsAttrTypeStandard:RealName"][0].rstrip()})                   
 
         return group_names
 
