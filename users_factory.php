@@ -38,6 +38,7 @@ $factory->define(Users_model::class, function (Faker\Generator $faker) {
         'password_history_depth' => $faker->randomNumber(),
         'linked_full_name' => $faker->word(),
         'linked_timestamp' => $faker->dateTimeBetween('-4 years')->format('U'),
+        'autologin_enabled' => $faker->numberBetween(0, 1),
     ];
 });
 

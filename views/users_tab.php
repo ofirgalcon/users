@@ -36,10 +36,10 @@ $(document).on('appReady', function(){
                         rows = rows
                     }
 
-                    else if((prop == 'ssh_access' || prop == 'screenshare_access') && d[prop] == 1){
+                    else if((prop == 'ssh_access' || prop == 'screenshare_access' || prop == 'autologin_enabled') && d[prop] == 1){
                         rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-danger">'+i18n.t('on')+'</span></td></tr>';
                     }
-                    else if((prop == 'ssh_access' || prop == 'screenshare_access') && d[prop] == 0){
+                    else if((prop == 'ssh_access' || prop == 'screenshare_access' || prop == 'autologin_enabled') && d[prop] == 0){
                         rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-success">'+i18n.t('off')+'</span></td></tr>';
                     }
                     

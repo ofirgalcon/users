@@ -42,6 +42,7 @@ class Users_model extends Eloquent
 		'password_history_depth',
 		'linked_full_name',
 		'linked_timestamp',
+		'autologin_enabled',
     ];
 
     public $timestamps = false;

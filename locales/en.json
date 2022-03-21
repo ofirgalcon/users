@@ -43,5 +43,7 @@
     "no_local_admins": "No Local Admins",
     "local_admins": "Local Admins",
     "local_administrators": "Local Administrators",
-    "current_user": "Current User"
+    "current_user": "Current User",
+    "autologin_enabled": "Auto Login Enabled",
+    "no_autologin_enabled_users": "No Users with Auto Login Enabled"
 }
