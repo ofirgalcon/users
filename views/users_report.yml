@@ -4,3 +4,4 @@ row1:
     users_screensharing:
 row2:
     users_local_admins:
+    users_autologin_enabled:

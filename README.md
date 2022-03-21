@@ -22,7 +22,7 @@ Database:
 * home_directory - varchar(255) - Home directory path
 * primary_group_id - varchar(255) - Primary group ID
 * record_name - varchar(255) - Username
-* group_memership - varchar(255) - Groups user is a part of
+* group_memership - text - Groups user is a part of
 * administrator - boolean - Is an administrator
 * ssh_access - boolean - SSH access
 * screenshare_access - boolean - Screen Sharing access
@@ -48,6 +48,7 @@ Database:
 * password_history_depth - varchar(255) - Number of passwords to have as history
 * linked_full_name - varchar(255) - Linked Apple ID
 * linked_timestamp - bigint - Timestamp of when Apple ID was linked to account
+* autologin_enabled - boolean - If automatic login is enabled or disabled
 
 Configuration
 -------------

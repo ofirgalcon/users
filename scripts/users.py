@@ -86,6 +86,12 @@ def process_user_info(all_users,group_names):
             elif user_att == 'dsAttrTypeStandard:RecordName':
                 user_atts['record_name'] = user[user_att][0]
 
+                # Check for autologin
+                if user_account_auto_login_enabled() == user[user_att][0]:
+                    user_atts['autologin_enabled'] = 1
+                else:
+                    user_atts['autologin_enabled'] = 0
+
                 # Process user's groups
                 try:
 
@@ -194,6 +200,9 @@ def process_user_info(all_users,group_names):
 
 def user_account_hints_enabled():
     return CFPreferencesCopyAppValue('user_account_hints_enabled', 'MunkiReport')
+
+def user_account_auto_login_enabled():
+    return CFPreferencesCopyAppValue('autoLoginUser', 'com.apple.loginwindow')
 
 def main():
     """Main"""

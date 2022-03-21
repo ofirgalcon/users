@@ -1,0 +1,9 @@
+type: scrollbox
+widget_id: users-autologin_enabled-widget
+api_url: /module/users/autologin_enabled
+i18n_title: users.autologin_enabled
+icon: fa-magic
+listing_link: /show/listing/users/users
+search_key: record_name
+i18nEmptyResult: users.no_autologin_enabled_users
+badge: count

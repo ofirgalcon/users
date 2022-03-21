@@ -23,3 +23,5 @@ widgets:
         view: users_screensharing_widget
     users_local_admins:
         view: users_local_admins_widget
+    users_autologin_enabled:
+        view: users_autologin_enabled_widget
