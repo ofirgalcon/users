@@ -46,8 +46,10 @@ def get_group_names():
         for group in groups_pl:
 
             # Process each group record name, some of more than one record name
-            for record_name in group["dsAttrTypeStandard:RecordName"]:
-                group_names.update({record_name: group["dsAttrTypeStandard:RealName"][0].rstrip()})
+            if "dsAttrTypeStandard:RealName" in group:
+                for record_name in group["dsAttrTypeStandard:RecordName"]:
+                    if "Public Folder" not in group["dsAttrTypeStandard:RealName"][0].rstrip():
+                        group_names.update({record_name: group["dsAttrTypeStandard:RealName"][0].rstrip()})                   
 
         return group_names
 
@@ -98,7 +100,10 @@ def process_user_info(all_users,group_names):
 
                     # Translate each group to real name
                     for group in output.split(' '):
-                        groups_list.append(group_names[group.rstrip()])
+                        try:
+                            groups_list.append(group_names[group.rstrip()])
+                        except KeyError:
+                            continue
 
                     user_atts['group_memership'] = ", ".join(sorted(groups_list))
 
