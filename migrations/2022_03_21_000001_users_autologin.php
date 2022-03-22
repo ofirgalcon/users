@@ -6,7 +6,7 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 
 class UsersAutologin extends Migration
 {
-    private $tableName = 'users';
+    private $tableName = 'local_users';
 
     public function up()
     {
