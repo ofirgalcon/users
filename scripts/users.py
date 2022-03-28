@@ -1,4 +1,4 @@
-#!/usr/local/munkireport/munkireport-python2
+#!/usr/local/munki/munki-python
 # Written for MunkiReport by tuxudo
 
 import subprocess
@@ -8,10 +8,6 @@ import sys
 from datetime import datetime
 import time
 
-sys.path.insert(0, '/usr/local/munki')
-sys.path.insert(0, '/usr/local/munkireport')
-
-from munkilib import FoundationPlist
 from Foundation import CFPreferencesCopyAppValue
 
 def get_users_info():
@@ -24,7 +20,10 @@ def get_users_info():
     (output, unused_error) = proc.communicate()
     
     try:
-        return plistlib.readPlistFromString(output)
+        try:
+            return plistlib.readPlistFromString(output)
+        except AttributeError as e:
+            return plistlib.loads(output)
     except Exception:
         return {}
 
@@ -38,7 +37,10 @@ def get_group_names():
     (output, unused_error) = proc.communicate()
 
     try:
-        groups_pl = plistlib.readPlistFromString(output)
+        try:
+            groups_pl = plistlib.readPlistFromString(output)
+        except AttributeError as e:
+            groups_pl = plistlib.loads(output)
 
         group_names = {}
 
@@ -62,7 +64,7 @@ def process_user_info(all_users,group_names):
     for user in all_users:
 
         # Skip service accounts
-        if 'dsAttrTypeStandard:UserShell' not in user.keys() or user['dsAttrTypeStandard:UserShell'][0] == "/usr/bin/false" or 'dsAttrTypeStandard:NFSHomeDirectory' not in user.keys() or user['dsAttrTypeStandard:NFSHomeDirectory'][0] == "/var/setup" or user['dsAttrTypeStandard:NFSHomeDirectory'][0] == "/var/spool/uucp" or user['dsAttrTypeStandard:RecordName'][0] == "root":
+        if 'dsAttrTypeStandard:UserShell' not in list(user.keys()) or user['dsAttrTypeStandard:UserShell'][0] == "/usr/bin/false" or 'dsAttrTypeStandard:NFSHomeDirectory' not in list(user.keys()) or user['dsAttrTypeStandard:NFSHomeDirectory'][0] == "/var/setup" or user['dsAttrTypeStandard:NFSHomeDirectory'][0] == "/var/spool/uucp" or user['dsAttrTypeStandard:RecordName'][0] == "root":
             continue
 
         user_atts = {}
@@ -105,7 +107,7 @@ def process_user_info(all_users,group_names):
                     groups_list = []
 
                     # Translate each group to real name
-                    for group in output.split(' '):
+                    for group in output.decode().split(' '):
                         try:
                             groups_list.append(group_names[group.rstrip()])
                         except KeyError:
@@ -166,7 +168,10 @@ def process_user_info(all_users,group_names):
 
             elif user_att == 'dsAttrTypeNative:accountPolicyData':
 
-                policy_data = plistlib.readPlistFromString(user[user_att][0])
+                try:
+                    policy_data = plistlib.readPlistFromString(user[user_att][0])
+                except AttributeError as e:
+                    policy_data = plistlib.loads(user[user_att][0].encode())
 
                 for policy_item in policy_data:
                     if policy_item == "creationTime":
@@ -207,11 +212,6 @@ def user_account_auto_login_enabled():
 def main():
     """Main"""
 
-    # Set the encoding
-    # The "ugly hack" :P 
-    reload(sys)  
-    sys.setdefaultencoding('utf8')
-
     # Get results
     result = dict()
     result = process_user_info(get_users_info(),get_group_names())
@@ -219,8 +219,11 @@ def main():
     # Write users results to cache
     cachedir = '%s/cache' % os.path.dirname(os.path.realpath(__file__))
     output_plist = os.path.join(cachedir, 'users.plist')
-    plistlib.writePlist(result, output_plist)
-#    print plistlib.writePlistToString(result)
+    try:
+        plistlib.writePlist(result, output_plist)
+    except:
+        with open(output_plist, 'wb') as fp:
+            plistlib.dump(result, fp, fmt=plistlib.FMT_XML)
 
 if __name__ == "__main__":
     main()
