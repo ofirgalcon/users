@@ -1,6 +1,6 @@
 type: scrollbox
 widget_id: users-autologin_enabled-widget
-api_url: /module/users/autologin_enabled
+api_url: /module/users/autologin_users
 i18n_title: users.autologin_enabled
 icon: fa-magic
 listing_link: /show/listing/users/users
