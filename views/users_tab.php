@@ -5,7 +5,7 @@
 
 <script>
 $(document).on('appReady', function(){
-	$.getJSON(appUrl + '/module/users/get_tab_data/' + serialNumber, function(data){
+    $.getJSON(appUrl + '/module/users/get_tab_data/' + serialNumber, function(data){
 
         // Check if we have data
         if(!data[0]){
@@ -43,12 +43,15 @@ $(document).on('appReady', function(){
                         rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-success">'+i18n.t('off')+'</span></td></tr>';
                     }
                     
-                    else if((prop == 'administrator' || prop == 'autologin_enabled') && d[prop] == 1){
+                    else if(prop == 'administrator' && d[prop] == 1){
                         rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-danger">'+i18n.t('yes')+'</span></td></tr>';
                         local_admins = local_admins + d['record_name'] + " (" + d['unique_id'] + ") "
                     }
                     else if((prop == 'administrator' || prop == 'autologin_enabled') && d[prop] == 0){
                         rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-success">'+i18n.t('no')+'</span></td></tr>';
+                    }
+                    else if(prop == 'autologin_enabled' && d[prop] == 1){
+                        rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-danger">'+i18n.t('yes')+'</span></td></tr>';
                     }
 
                     else if((prop == 'copy_timestamp' || prop == 'creation_time' || prop == 'smb_password_last_set' || prop == 'linked_timestamp' || prop == 'failed_login_timestamp' || prop == 'password_last_set_time' || prop == 'last_login_timestamp') && parseInt(d[prop]) > 0){
@@ -62,9 +65,9 @@ $(document).on('appReady', function(){
 
                 $('#users-tab')
                 .append($('<h4>')
-					.append($('<i>')
-						.addClass('fa fa-user'))
-					.append(' '+d.record_name))
+                    .append($('<i>')
+                        .addClass('fa fa-user'))
+                    .append(' '+d.record_name))
                 .append($('<div style="max-width:750px;">')
                     .append($('<table>')
                         .addClass('table table-striped table-condensed')
@@ -75,6 +78,6 @@ $(document).on('appReady', function(){
             // Appent local admins to client detail table
             $('#mr-users-table').append('<tr><th>'+i18n.t('users.local_administrators')+'</th><td>'+local_admins+'</td></tr>')
         }
-	});
+    });
 });
 </script>

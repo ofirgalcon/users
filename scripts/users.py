@@ -170,22 +170,21 @@ def process_user_info(all_users,group_names):
 
                 try:
                     policy_data = plistlib.readPlistFromString(user[user_att][0])
-                except AttributeError as e:
-                    policy_data = plistlib.loads(user[user_att][0].encode())
-
-                for policy_item in policy_data:
-                    if policy_item == "creationTime":
-                        user_atts['creation_time'] = str(policy_data[policy_item])
-                    elif policy_item == "failedLoginCount":
-                        user_atts['failed_login_count'] = policy_data[policy_item]
-                    elif policy_item == "failedLoginTimestamp":
-                        user_atts['failed_login_timestamp'] = str(policy_data[policy_item])
-                    elif policy_item == "passwordLastSetTime":
-                        user_atts['password_last_set_time'] = str(policy_data[policy_item])
-                    elif policy_item == "lastLoginTimestamp":
-                        user_atts['last_login_timestamp'] = str(policy_data[policy_item])
-                    elif policy_item == "passwordHistoryDepth":
-                        user_atts['password_history_depth'] = policy_data[policy_item]
+                    for policy_item in policy_data:
+                        if policy_item == "creationTime":
+                            user_atts['creation_time'] = str(policy_data[policy_item])
+                        elif policy_item == "failedLoginCount":
+                            user_atts['failed_login_count'] = policy_data[policy_item]
+                        elif policy_item == "failedLoginTimestamp":
+                            user_atts['failed_login_timestamp'] = str(policy_data[policy_item])
+                        elif policy_item == "passwordLastSetTime":
+                            user_atts['password_last_set_time'] = str(policy_data[policy_item])
+                        elif policy_item == "lastLoginTimestamp":
+                            user_atts['last_login_timestamp'] = str(policy_data[policy_item])
+                        elif policy_item == "passwordHistoryDepth":
+                            user_atts['password_history_depth'] = policy_data[policy_item]
+                except:
+                    pass
 
             elif user_att == 'dsAttrTypeNative:LinkedIdentity':
 
