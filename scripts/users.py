@@ -161,7 +161,10 @@ def process_user_info(all_users,group_names):
             elif user_att == 'dsAttrTypeStandard:PrimaryNTDomain':
                 user_atts['primary_nt_domain'] = user[user_att][0]
             elif user_att == 'dsAttrTypeStandard:CopyTimestamp':
-                user_atts['copy_timestamp'] = str(time.mktime(datetime.strptime(user[user_att][0].strip(), "%Y-%m-%dT%H:%M:%SZ").timetuple()))
+                try:
+                    user_atts['copy_timestamp'] = str(time.mktime(datetime.strptime(user[user_att][0].strip(), "%Y-%m-%dT%H:%M:%SZ").timetuple()))
+                except:
+                    pass
             elif user_att == 'dsAttrTypeStandard:SMBPasswordLastSet':
                 user_atts['smb_password_last_set'] = str((int(user[user_att][0])/10000000)-11644473600)
 
