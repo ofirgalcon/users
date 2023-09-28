@@ -4,11 +4,16 @@
 import subprocess
 import os
 import plistlib
-import sys
 from datetime import datetime
 import time
 
 from Foundation import CFPreferencesCopyAppValue
+
+def readPlist(plist):
+    try:
+        return plistlib.readPlistFromString(plist)
+    except AttributeError as e:
+        return plistlib.loads(plist)
 
 def get_users_info():
 
@@ -18,12 +23,9 @@ def get_users_info():
                             stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (output, unused_error) = proc.communicate()
-    
+
     try:
-        try:
-            return plistlib.readPlistFromString(output)
-        except AttributeError as e:
-            return plistlib.loads(output)
+        return readPlist(output)
     except Exception:
         return {}
 
@@ -37,10 +39,7 @@ def get_group_names():
     (output, unused_error) = proc.communicate()
 
     try:
-        try:
-            groups_pl = plistlib.readPlistFromString(output)
-        except AttributeError as e:
-            groups_pl = plistlib.loads(output)
+        groups_pl = readPlist(output)
 
         group_names = {}
 
@@ -167,9 +166,8 @@ def process_user_info(all_users,group_names):
 
 
             elif user_att == 'dsAttrTypeNative:accountPolicyData':
-
                 try:
-                    policy_data = plistlib.readPlistFromString(user[user_att][0])
+                    policy_data = readPlist(user[user_att][0].encode())
                     for policy_item in policy_data:
                         if policy_item == "creationTime":
                             user_atts['creation_time'] = str(policy_data[policy_item])
@@ -189,7 +187,7 @@ def process_user_info(all_users,group_names):
             elif user_att == 'dsAttrTypeNative:LinkedIdentity':
 
                 try:
-                    linkid_data = (plistlib.readPlistFromString(user[user_att][0]))["appleid.apple.com"]['linked identities'][0]
+                    linkid_data = (readPlist(user[user_att][0]))["appleid.apple.com"]['linked identities'][0]
 
                     for linkit_item in linkid_data:
                         if linkit_item == "full name":
