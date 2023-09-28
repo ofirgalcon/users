@@ -60,8 +60,6 @@ def get_group_names():
 def process_user_info(all_users,group_names):
     out = []
 
-    print(all_users)
-
     for user in all_users:
 
         # Skip service accounts
