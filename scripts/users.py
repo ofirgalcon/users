@@ -172,14 +172,22 @@ def process_user_info(all_users,group_names):
                 try:
                     policy_data = readPlist(user[user_att][0].encode())
                     for policy_item in policy_data:
-                        if policy_item == "creationTime":
+                        if policy_item == "creationTime" and ":" in str(policy_data[policy_item]):
+                            user_atts['creation_time'] = str(int(time.mktime(policy_data[policy_item].timetuple())))
+                        elif policy_item == "creationTime":
                             user_atts['creation_time'] = str(policy_data[policy_item])
                         elif policy_item == "failedLoginCount":
                             user_atts['failed_login_count'] = policy_data[policy_item]
+                        elif policy_item == "failedLoginTimestamp" and ":" in str(policy_data[policy_item]):
+                            user_atts['failed_login_timestamp'] = str(int(time.mktime(policy_data[policy_item].timetuple())))
                         elif policy_item == "failedLoginTimestamp":
                             user_atts['failed_login_timestamp'] = str(policy_data[policy_item])
+                        elif policy_item == "passwordLastSetTime" and ":" in str(policy_data[policy_item]):
+                            user_atts['password_last_set_time'] = str(int(time.mktime(policy_data[policy_item].timetuple())))
                         elif policy_item == "passwordLastSetTime":
                             user_atts['password_last_set_time'] = str(policy_data[policy_item])
+                        elif policy_item == "lastLoginTimestamp" and ":" in str(policy_data[policy_item]):
+                            user_atts['last_login_timestamp'] = str(int(time.mktime(policy_data[policy_item].timetuple())))
                         elif policy_item == "lastLoginTimestamp":
                             user_atts['last_login_timestamp'] = str(policy_data[policy_item])
                         elif policy_item == "passwordHistoryDepth":
