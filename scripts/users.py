@@ -7,9 +7,46 @@ import plistlib
 from datetime import datetime
 import time
 
+from SystemConfiguration import SCDynamicStoreCopyConsoleUser
+import sys
+
 from Foundation import CFPreferencesCopyAppValue
 
+from ctypes import (CDLL,
+                    Structure,
+                    POINTER,
+                    c_int64,
+                    c_int32,
+                    c_int16,
+                    c_char,
+                    c_uint32)
+from ctypes.util import find_library
+
+# constants
+c = CDLL(find_library("System"))
+
+class timeval(Structure):
+    _fields_ = [
+                ("tv_sec",  c_int64),
+                # ("tv_usec", c_int32),
+               ]
+
+class utmpx(Structure):
+    _fields_ = [
+                ("ut_user", c_char*256),
+                ("ut_id",   c_char*4),
+                ("ut_line", c_char*32),
+                ("ut_pid",  c_int32),
+                ("ut_type", c_int16),
+                ("ut_tv",   timeval),
+                ("ut_host", c_char*256),
+                ("ut_pad",  c_uint32*16),
+                ]
+
 def readPlist(plist):
+    if not isinstance(plist, bytes):
+        plist = plist.encode()
+
     try:
         return plistlib.readPlistFromString(plist)
     except AttributeError as e:
@@ -50,7 +87,7 @@ def get_group_names():
             if "dsAttrTypeStandard:RealName" in group:
                 for record_name in group["dsAttrTypeStandard:RecordName"]:
                     if "Public Folder" not in group["dsAttrTypeStandard:RealName"][0].rstrip():
-                        group_names.update({record_name: group["dsAttrTypeStandard:RealName"][0].rstrip()})                   
+                        group_names.update({record_name: group["dsAttrTypeStandard:RealName"][0].rstrip()})
 
         return group_names
 
@@ -59,6 +96,7 @@ def get_group_names():
 
 def process_user_info(all_users,group_names):
     out = []
+    i = 0
 
     for user in all_users:
 
@@ -68,7 +106,12 @@ def process_user_info(all_users,group_names):
 
         user_atts = {}
 
-        for user_att in user:             
+        if i == 0:
+            # Get the current user only once
+            user_atts['current_user'] = get_current_user()
+            i = 1
+
+        for user_att in user:
 
             if user_att == 'dsAttrTypeStandard:RealName':
                 user_atts['real_name'] = user[user_att][0]
@@ -170,26 +213,27 @@ def process_user_info(all_users,group_names):
 
             elif user_att == 'dsAttrTypeNative:accountPolicyData':
                 try:
-                    policy_data = readPlist(user[user_att][0].encode())
+                    policy_data = readPlist(user[user_att][0])
                     for policy_item in policy_data:
                         if policy_item == "creationTime" and ":" in str(policy_data[policy_item]):
                             user_atts['creation_time'] = str(int(time.mktime(policy_data[policy_item].timetuple())))
                         elif policy_item == "creationTime":
-                            user_atts['creation_time'] = str(policy_data[policy_item])
+                            user_atts['creation_time'] = str(int(policy_data[policy_item]))
                         elif policy_item == "failedLoginCount":
                             user_atts['failed_login_count'] = policy_data[policy_item]
                         elif policy_item == "failedLoginTimestamp" and ":" in str(policy_data[policy_item]):
                             user_atts['failed_login_timestamp'] = str(int(time.mktime(policy_data[policy_item].timetuple())))
                         elif policy_item == "failedLoginTimestamp":
-                            user_atts['failed_login_timestamp'] = str(policy_data[policy_item])
+                            user_atts['failed_login_timestamp'] = str(int(policy_data[policy_item]))
                         elif policy_item == "passwordLastSetTime" and ":" in str(policy_data[policy_item]):
                             user_atts['password_last_set_time'] = str(int(time.mktime(policy_data[policy_item].timetuple())))
                         elif policy_item == "passwordLastSetTime":
-                            user_atts['password_last_set_time'] = str(policy_data[policy_item])
-                        elif policy_item == "lastLoginTimestamp" and ":" in str(policy_data[policy_item]):
-                            user_atts['last_login_timestamp'] = str(int(time.mktime(policy_data[policy_item].timetuple())))
-                        elif policy_item == "lastLoginTimestamp":
-                            user_atts['last_login_timestamp'] = str(policy_data[policy_item])
+                            user_atts['password_last_set_time'] = str(int(policy_data[policy_item]))
+                        ## This is commented out to force the script to always use the much more reliable method below
+                        # elif policy_item == "lastLoginTimestamp" and ":" in str(policy_data[policy_item]):
+                            # user_atts['last_login_timestamp'] = str(int(time.mktime(policy_data[policy_item].timetuple())))
+                        # elif policy_item == "lastLoginTimestamp":
+                            # user_atts['last_login_timestamp'] = str(int(policy_data[policy_item]))
                         elif policy_item == "passwordHistoryDepth":
                             user_atts['password_history_depth'] = policy_data[policy_item]
                 except:
@@ -204,12 +248,76 @@ def process_user_info(all_users,group_names):
                         if linkit_item == "full name":
                             user_atts['linked_full_name'] = linkid_data[linkit_item]
                         elif linkit_item == "timestamp":
-                            user_atts['linked_timestamp'] = str(time.mktime(linkid_data[linkit_item].timetuple()))
+                            user_atts['linked_timestamp'] = str(int(time.mktime(linkid_data[linkit_item].timetuple())))
                 except:
                     user_atts['linked_full_name'] = ""
 
+        # Get the last login timestamp
+        if 'last_login_timestamp' not in user_atts and 'record_name' in user_atts:
+            try:
+                last_login_timestamp = last_login_time(user_atts['record_name'])
+                if last_login_timestamp != "":
+                    user_atts['last_login_timestamp'] = last_login_timestamp
+            except:
+                pass
+
         out.append(user_atts)
     return out
+
+def get_current_user():
+    # From https://macmule.com/2014/11/19/how-to-get-the-currently-logged-in-user-in-a-more-apple-approved-way/
+
+    username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]
+    username = [username,""][username in [u"loginwindow", None, u""]]
+
+    if username == "_mbsetupuser":
+        username = "Setup Assistant"
+    elif username == "loginwindow":
+        username = "Login Window"
+    elif username == "root":
+        username = "root"
+    elif username == "":
+        username = "None"
+
+    return username
+
+def last_login_time(user_name):
+    """This method will replicate the functionallity of the /usr/bin/last
+    command to output all logins, reboots, and shutdowns. We then calculate
+    the logout.
+
+    session takes on of the following strings:
+        * gui
+        * gui_ssh
+        * all
+    """
+    # This is largely from the user_sessions script
+
+    # local constants
+    setutxent_wtmp = c.setutxent_wtmp
+    setutxent_wtmp.restype = None
+    getutxent_wtmp = c.getutxent_wtmp
+    getutxent_wtmp.restype = POINTER(utmpx)
+    endutxent_wtmp = c.setutxent_wtmp
+    endutxent_wtmp.restype = None
+    # data storage
+    events = []
+    # initialize
+    setutxent_wtmp(0)
+    entry = getutxent_wtmp()
+
+    while entry:
+        e = entry.contents
+        entry = getutxent_wtmp()
+        event = {}
+
+        # Return the first console login for the specifed username
+        if e.ut_type == 7 and e.ut_line.decode("utf-8", errors="ignore") == "console" and e.ut_user.decode("utf-8", errors="ignore") == user_name:
+            return str(int(e.ut_tv.tv_sec))
+
+    # finish
+    endutxent_wtmp()
+    return ""
 
 def user_account_hints_enabled():
     return CFPreferencesCopyAppValue('user_account_hints_enabled', 'MunkiReport')

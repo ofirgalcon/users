@@ -11,7 +11,7 @@ class UsersAutologin extends Migration
     public function up()
     {
         $capsule = new Capsule();
-        
+
         $capsule::schema()->table($this->tableName, function (Blueprint $table) {
             $table->boolean('autologin_enabled')->nullable();
         });

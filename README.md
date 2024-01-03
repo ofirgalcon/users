@@ -8,6 +8,16 @@ Client Preferences
 It is possible to enable the collection of user account hints on clients using the preference domain MunkiReport with boolean key `user_account_hints_enabled` set to `true`. Alternatively, you can run `sudo defaults write /Library/Preferences/MunkiReport.plist user_account_hints_enabled -bool true` on the client.
 
 
+Configuration
+-------------
+
+Users Local Admin Threshold Value:  
+This value specifies the minimum number of local admin accounts needed to
+list the computer in the Users Local Admin Report.  Default is 2.
+```
+USERS_LOCAL_ADMIN_THRESHOLD=2
+```
+
 Table Schema
 -----
 
@@ -49,13 +59,4 @@ Database:
 * linked_full_name - varchar(255) - Linked Apple ID
 * linked_timestamp - bigint - Timestamp of when Apple ID was linked to account
 * autologin_enabled - boolean - If automatic login is enabled or disabled
-
-Configuration
--------------
-
-Users Local Admin Threshold Value:  
-This value specifies the minimum number of local admin accounts needed to
-list the computer in the Users Local Admin Report.  Default is 2.
-```
-USERS_LOCAL_ADMIN_THRESHOLD=2
-```
+* current_user - varchar(255) - Current logged in user name

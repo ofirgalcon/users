@@ -14,9 +14,8 @@ class UsersRenameTable extends Migration
         if ($capsule::schema()->hasTable($this->tableName)) {
             $capsule::schema()->rename($this->tableName, $this->tableNameV2);
         }
-
     }
-    
+
     public function down()
     {
         $capsule = new Capsule();

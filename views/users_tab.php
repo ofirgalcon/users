@@ -47,6 +47,10 @@ $(document).on('appReady', function(){
                         rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-danger">'+i18n.t('yes')+'</span></td></tr>';
                         local_admins = local_admins + d['record_name'] + " (" + d['unique_id'] + ") "
                     }
+                    else if(prop == 'current_user' && (d[prop] !== "" || d[prop] !== null)){
+                        // Append current user to client detail table, don't show in client tab
+                        $('#mr-users-table').append('<tr><th>'+i18n.t('users.current_user')+'</th><td>'+d[prop]+'</td></tr>')
+                    }
                     else if((prop == 'administrator' || prop == 'autologin_enabled') && d[prop] == 0){
                         rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-success">'+i18n.t('no')+'</span></td></tr>';
                     }
@@ -75,7 +79,7 @@ $(document).on('appReady', function(){
                             .append(rows))))
             })
 
-            // Appent local admins to client detail table
+            // Append local admins to client detail table
             $('#mr-users-table').append('<tr><th>'+i18n.t('users.local_administrators')+'</th><td>'+local_admins+'</td></tr>')
         }
     });
