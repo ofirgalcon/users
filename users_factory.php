@@ -40,6 +40,7 @@ $factory->define(Users_model::class, function (Faker\Generator $faker) {
         'linked_timestamp' => $faker->dateTimeBetween('-4 years')->format('U'),
         'autologin_enabled' => $faker->numberBetween(0, 1),
         'current_user' => $faker->word(),
+        'is_hidden' => $faker->numberBetween(0, 1),
     ];
 });
 

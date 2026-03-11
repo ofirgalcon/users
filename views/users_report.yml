@@ -5,3 +5,4 @@ row1:
 row2:
     users_local_admins:
     users_autologin_enabled:
+    users_is_hidden:

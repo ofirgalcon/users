@@ -25,3 +25,5 @@ widgets:
         view: users_local_admins_widget
     users_autologin_enabled:
         view: users_autologin_enabled_widget
+    users_is_hidden:
+        view: users_is_hidden_widget

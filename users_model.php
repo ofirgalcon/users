@@ -44,6 +44,7 @@ class Users_model extends Eloquent
         'linked_timestamp',
         'autologin_enabled',
         'current_user',
+        'is_hidden',
     ];
 
     public $timestamps = false;

@@ -1,0 +1,9 @@
+type: scrollbox
+widget_id: users-is_hidden-widget
+api_url: /module/users/is_hidden_users
+i18n_title: users.is_hidden
+icon: fa-user-secret
+listing_link: /show/listing/users/users
+search_key: serial_number
+i18nEmptyResult: users.no_is_hidden
+badge: count

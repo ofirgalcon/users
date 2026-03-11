@@ -18,6 +18,7 @@ table:
   - {i18n_header: users.ssh_access, column: local_users.ssh_access, formatter: formatUsersYesNoSSH}
   - {i18n_header: users.screenshare_access, column: local_users.screenshare_access, formatter: formatUsersYesNoSSH}
   - {i18n_header: users.autologin_enabled, column: local_users.autologin_enabled, formatter: formatUsersYesNoSSH}
+  - {i18n_header: users.is_hidden, column: local_users.is_hidden, formatter: formatUsersYesNoSSH}
   - {i18n_header: users.user_shell, column: local_users.user_shell}
   - {i18n_header: users.generated_uuid, column: local_users.generated_uuid}
   - {i18n_header: users.last_login_timestamp, column: local_users.last_login_timestamp, formatter: timestampToMoment}

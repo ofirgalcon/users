@@ -252,6 +252,10 @@ def process_user_info(all_users,group_names):
                 except:
                     user_atts['linked_full_name'] = ""
 
+
+            elif user_att == 'dsAttrTypeNative:IsHidden':
+                user_atts['is_hidden'] = to_bool(user[user_att][0])
+
         # Get the last login timestamp
         if 'last_login_timestamp' not in user_atts and 'record_name' in user_atts:
             try:
@@ -324,6 +328,12 @@ def user_account_hints_enabled():
 
 def user_account_auto_login_enabled():
     return CFPreferencesCopyAppValue('autoLoginUser', 'com.apple.loginwindow')
+
+def to_bool(s):
+    if s == True or s == "YES":
+        return 1
+    else:
+        return 0
 
 def main():
     """Main"""

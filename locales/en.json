@@ -45,5 +45,7 @@
     "local_administrators": "Local Administrators",
     "current_user": "Current User",
     "autologin_enabled": "Auto Login Enabled",
+    "is_hidden": "Is Hidden",
+    "no_is_hidden": "No Hidden User Accounts",
     "no_autologin_enabled_users": "No Users with Auto Login Enabled"
 }
