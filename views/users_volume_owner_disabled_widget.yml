@@ -1,0 +1,10 @@
+type: scrollbox
+widget_id: users-volume-owner-disabled-widget
+api_url: /module/users/volume_owner_disabled_users
+i18n_title: users.volume_owner_disabled_users
+i18n_tooltip: users.tooltips.volume_owner_disabled_users
+icon: fa-lock
+listing_link: /show/listing/users/users
+search_key: record_name
+i18nEmptyResult: users.no_volume_owner_disabled_users
+badge: count

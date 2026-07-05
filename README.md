@@ -59,5 +59,7 @@ Database:
 * linked_full_name - varchar(255) - Linked Apple ID
 * linked_timestamp - bigint - Timestamp of when Apple ID was linked to account
 * autologin_enabled - boolean - If automatic login is enabled or disabled
+* is_hidden - boolean - If user account is a hidden user
+* secure_token - boolean - If user has Secure Token enabled
+* volume_owner - boolean - If user is an APFS System Volume Owner
 * current_user - varchar(255) - Current logged in user name
-* boolean - boolean - If user account is a hidden user

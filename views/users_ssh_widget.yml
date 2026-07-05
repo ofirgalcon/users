@@ -2,6 +2,7 @@ type: scrollbox
 widget_id: users-ssh-widget
 api_url: /module/users/ssh_users
 i18n_title: users.ssh_users
+i18n_tooltip: users.tooltips.ssh_users
 icon: fa-terminal
 listing_link: /show/listing/users/users
 search_key: record_name

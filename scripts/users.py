@@ -4,23 +4,35 @@
 import subprocess
 import os
 import plistlib
+import re
 from datetime import datetime
 import time
 
-from SystemConfiguration import SCDynamicStoreCopyConsoleUser
 import sys
 
-from Foundation import CFPreferencesCopyAppValue
+# Import ctypes before other framework imports to avoid conflicts
+try:
+    from ctypes import (CDLL,
+                        Structure,
+                        POINTER,
+                        c_int64,
+                        c_int32,
+                        c_int16,
+                        c_char,
+                        c_uint32)
+    from ctypes.util import find_library
+except (AttributeError, ImportError) as e:
+    # Python 3.12 ctypes compatibility issue - ctypes module is broken
+    # This indicates a corrupted or incomplete Python 3.12 installation
+    # The ctypes module itself fails to load, not our code
+    error_msg = str(e) if e else "Unknown error"
+    print(f"Error importing ctypes: {error_msg}", file=sys.stderr)
+    print("This indicates a broken Python 3.12 installation. Please reinstall Python 3.12.", file=sys.stderr)
+    sys.exit(1)
 
-from ctypes import (CDLL,
-                    Structure,
-                    POINTER,
-                    c_int64,
-                    c_int32,
-                    c_int16,
-                    c_char,
-                    c_uint32)
-from ctypes.util import find_library
+from SystemConfiguration import SCDynamicStoreCopyConsoleUser
+
+from Foundation import CFPreferencesCopyAppValue
 
 # constants
 c = CDLL(find_library("System"))
@@ -43,14 +55,92 @@ class utmpx(Structure):
                 ("ut_pad",  c_uint32*16),
                 ]
 
+_volume_owner_lookup_cache = None
+
 def readPlist(plist):
     if not isinstance(plist, bytes):
         plist = plist.encode()
 
     try:
-        return plistlib.readPlistFromString(plist)
-    except AttributeError as e:
+
         return plistlib.loads(plist)
+    except Exception:
+        return {}
+
+def run_command(command):
+    proc = subprocess.Popen(command, shell=False, bufsize=-1,
+                            stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE)
+    (stdout, stderr) = proc.communicate()
+    return proc.returncode, stdout.decode('utf-8', errors='ignore'), stderr.decode('utf-8', errors='ignore')
+
+def normalize_guid(guid):
+    if not guid:
+        return ''
+    return guid.strip().lower().strip('{}')
+
+def get_secure_token_status(record_name):
+    if not record_name:
+        return None
+
+    cmd = ['/usr/sbin/sysadminctl', '-secureTokenStatus', record_name]
+    (returncode, stdout, stderr) = run_command(cmd)
+    if returncode != 0:
+        return None
+
+    output = ('%s\n%s' % (stdout, stderr)).lower()
+    if 'secure token is enabled for user' in output:
+        return 1
+    if 'secure token is disabled for user' in output:
+        return 0
+    return None
+
+def get_volume_owner_lookup():
+    global _volume_owner_lookup_cache
+
+    if _volume_owner_lookup_cache is not None:
+        return _volume_owner_lookup_cache
+
+    cmd = ['/usr/sbin/diskutil', 'apfs', 'listUsers', '/']
+    (returncode, stdout, stderr) = run_command(cmd)
+
+    if returncode != 0:
+        _volume_owner_lookup_cache = None
+        return _volume_owner_lookup_cache
+
+    guid_regex = re.compile(r'[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}')
+    volume_owners = {}
+    current_guid = None
+
+    for line in stdout.splitlines():
+        line = line.strip()
+
+        guid_match = guid_regex.search(line)
+        if guid_match:
+            current_guid = normalize_guid(guid_match.group(0))
+            continue
+
+        if current_guid and 'Volume Owner:' in line:
+            if 'Yes' in line:
+                volume_owners[current_guid] = 1
+            elif 'No' in line:
+                volume_owners[current_guid] = 0
+            current_guid = None
+
+    _volume_owner_lookup_cache = volume_owners
+    return _volume_owner_lookup_cache
+
+def get_volume_owner_status(generated_uuid):
+    normalized_uuid = normalize_guid(generated_uuid)
+    if not normalized_uuid:
+        return None
+
+    lookup = get_volume_owner_lookup()
+    if lookup is None:
+        return None
+
+    return lookup.get(normalized_uuid, 0)
 
 def get_users_info():
 
@@ -96,7 +186,7 @@ def get_group_names():
 
 def process_user_info(all_users,group_names):
     out = []
-    i = 0
+    current_user = get_current_user()
 
     for user in all_users:
 
@@ -105,11 +195,8 @@ def process_user_info(all_users,group_names):
             continue
 
         user_atts = {}
-
-        if i == 0:
-            # Get the current user only once
-            user_atts['current_user'] = get_current_user()
-            i = 1
+        user_atts['current_user'] = current_user
+        user_atts['is_hidden'] = 0
 
         for user_att in user:
 
@@ -210,7 +297,6 @@ def process_user_info(all_users,group_names):
             elif user_att == 'dsAttrTypeStandard:SMBPasswordLastSet':
                 user_atts['smb_password_last_set'] = str((int(user[user_att][0])/10000000)-11644473600)
 
-
             elif user_att == 'dsAttrTypeNative:accountPolicyData':
                 try:
                     policy_data = readPlist(user[user_att][0])
@@ -252,7 +338,6 @@ def process_user_info(all_users,group_names):
                 except:
                     user_atts['linked_full_name'] = ""
 
-
             elif user_att == 'dsAttrTypeNative:IsHidden':
                 user_atts['is_hidden'] = to_bool(user[user_att][0])
 
@@ -264,6 +349,16 @@ def process_user_info(all_users,group_names):
                     user_atts['last_login_timestamp'] = last_login_timestamp
             except:
                 pass
+
+        if 'record_name' in user_atts:
+            secure_token_status = get_secure_token_status(user_atts['record_name'])
+            if secure_token_status is not None:
+                user_atts['secure_token'] = secure_token_status
+
+        if 'generated_uuid' in user_atts:
+            volume_owner_status = get_volume_owner_status(user_atts['generated_uuid'])
+            if volume_owner_status is not None:
+                user_atts['volume_owner'] = volume_owner_status
 
         out.append(user_atts)
     return out
@@ -343,13 +438,11 @@ def main():
     result = process_user_info(get_users_info(),get_group_names())
 
     # Write users results to cache
+
     cachedir = '%s/cache' % os.path.dirname(os.path.realpath(__file__))
     output_plist = os.path.join(cachedir, 'users.plist')
-    try:
-        plistlib.writePlist(result, output_plist)
-    except:
-        with open(output_plist, 'wb') as fp:
-            plistlib.dump(result, fp, fmt=plistlib.FMT_XML)
+    with open(output_plist, 'wb') as fp:
+        plistlib.dump(result, fp, fmt=plistlib.FMT_XML)
 
 if __name__ == "__main__":
     main()

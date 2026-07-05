@@ -2,6 +2,7 @@ type: scrollbox
 widget_id: users-screensharing-widget
 api_url: /module/users/screensharing_users
 i18n_title: users.screensharing_users
+i18n_tooltip: users.tooltips.screensharing_users
 icon: fa-window-restore
 listing_link: /show/listing/users/users
 search_key: record_name

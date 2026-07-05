@@ -1,7 +1,24 @@
 <div id="users-tab"></div>
-<h2 data-i18n="users.users"></h2>
+
+<div id="lister" style="font-size: large; float: right;">
+    <a href="/show/listing/users/users" title="List">
+        <i class="btn btn-default tab-btn fa fa-list-alt"></i>
+    </a>
+</div>
+<div id="report_btn" style="font-size: large; float: right;">
+    <a href="/show/report/users/users_report" title="Report">
+        <i class="btn btn-default tab-btn fa fa-bar-chart-o"></i>
+    </a>
+</div>
+<h2><i class="fa fa-users"></i> <span data-i18n="users.users"></span></h2>
 
 <div id="users-msg" data-i18n="listing.loading" class="col-lg-12 text-center"></div>
+
+<style>
+    #users-tab table th.users-tab-label-col {
+        min-width: 130px;
+    }
+</style>
 
 <script>
 $(document).on('appReady', function(){
@@ -25,6 +42,7 @@ $(document).on('appReady', function(){
             $('#users-cnt').text(data.length);
 
             var local_admins = ''
+            var current_user_added = false
 
             $.each(data, function(i,d){
                 // Generate rows from data
@@ -37,33 +55,40 @@ $(document).on('appReady', function(){
                     }
 
                     else if((prop == 'ssh_access' || prop == 'screenshare_access') && d[prop] == 1){
-                        rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-danger">'+i18n.t('on')+'</span></td></tr>';
+                        rows = rows + '<tr><th class="users-tab-label-col">'+i18n.t('users.'+prop)+'</th><td><span class="label label-danger">'+i18n.t('on')+'</span></td></tr>';
                     }
                     else if((prop == 'ssh_access' || prop == 'screenshare_access') && d[prop] == 0){
-                        rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-success">'+i18n.t('off')+'</span></td></tr>';
+                        rows = rows + '<tr><th class="users-tab-label-col">'+i18n.t('users.'+prop)+'</th><td><span class="label label-success">'+i18n.t('off')+'</span></td></tr>';
                     }
-
+                    
                     else if(prop == 'administrator' && d[prop] == 1){
-                        rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-danger">'+i18n.t('yes')+'</span></td></tr>';
+                        rows = rows + '<tr><th class="users-tab-label-col">'+i18n.t('users.'+prop)+'</th><td><span class="label label-danger">'+i18n.t('yes')+'</span></td></tr>';
                         local_admins = local_admins + d['record_name'] + " (" + d['unique_id'] + ") "
                     }
-                    else if(prop == 'current_user' && (d[prop] !== "" || d[prop] !== null)){
+                    else if(prop == 'current_user' && (d[prop] !== "" || d[prop] !== null) && !current_user_added){
                         // Append current user to client detail table, don't show in client tab
                         $('#mr-users-table').append('<tr><th>'+i18n.t('users.current_user')+'</th><td>'+d[prop]+'</td></tr>')
+                        current_user_added = true
+                    }
+                    else if((prop == 'secure_token' || prop == 'volume_owner') && d[prop] == 1){
+                        rows = rows + '<tr><th class="users-tab-label-col">'+i18n.t('users.'+prop)+'</th><td><span class="label label-success">'+i18n.t('yes')+'</span></td></tr>';
+                    }
+                    else if((prop == 'secure_token' || prop == 'volume_owner') && d[prop] == 0){
+                        rows = rows + '<tr><th class="users-tab-label-col">'+i18n.t('users.'+prop)+'</th><td><span class="label label-danger">'+i18n.t('no')+'</span></td></tr>';
                     }
                     else if((prop == 'administrator' || prop == 'autologin_enabled' || prop == 'is_hidden') && d[prop] == 0){
-                        rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-success">'+i18n.t('no')+'</span></td></tr>';
+                        rows = rows + '<tr><th class="users-tab-label-col">'+i18n.t('users.'+prop)+'</th><td><span class="label label-success">'+i18n.t('no')+'</span></td></tr>';
                     }
                     else if((prop == 'autologin_enabled' || prop == 'is_hidden') && d[prop] == 1){
-                        rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span class="label label-danger">'+i18n.t('yes')+'</span></td></tr>';
+                        rows = rows + '<tr><th class="users-tab-label-col">'+i18n.t('users.'+prop)+'</th><td><span class="label label-danger">'+i18n.t('yes')+'</span></td></tr>';
                     }
 
                     else if((prop == 'copy_timestamp' || prop == 'creation_time' || prop == 'smb_password_last_set' || prop == 'linked_timestamp' || prop == 'failed_login_timestamp' || prop == 'password_last_set_time' || prop == 'last_login_timestamp') && parseInt(d[prop]) > 0){
                         var date = new Date(d[prop] * 1000);
-                        rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td><span title="'+moment(date).fromNow()+'">'+moment(date).format('llll')+'</span></td></tr>';
+                        rows = rows + '<tr><th class="users-tab-label-col">'+i18n.t('users.'+prop)+'</th><td><span title="'+moment(date).fromNow()+'">'+moment(date).format('llll')+'</span></td></tr>';
                     }
                     else {
-                        rows = rows + '<tr><th>'+i18n.t('users.'+prop)+'</th><td>'+d[prop]+'</td></tr>';
+                        rows = rows + '<tr><th class="users-tab-label-col">'+i18n.t('users.'+prop)+'</th><td>'+d[prop]+'</td></tr>';
                     }
                 }
 
@@ -71,7 +96,9 @@ $(document).on('appReady', function(){
                 .append($('<h4>')
                     .append($('<i>')
                         .addClass('fa fa-user'))
-                    .append(' '+d.record_name))
+                    .append(' '+d.record_name)
+                    .append(d.current_user === d.record_name ? ' ' : '')
+                    .append(d.current_user === d.record_name ? $('<span class="label label-info">').text(i18n.t('users.current_user')) : ''))
                 .append($('<div style="max-width:750px;">')
                     .append($('<table>')
                         .addClass('table table-striped table-condensed')

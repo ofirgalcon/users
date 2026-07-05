@@ -2,6 +2,7 @@ type: scrollbox
 widget_id: users-local-admins-widget
 api_url: /module/users/get_local_admin
 i18n_title: users.local_admins
+i18n_tooltip: "Shows local admin users across all clients. Each entry displays the serial number and count of installations."
 icon: fa-user-secret
 listing_link: /show/listing/users/users
 search_key: serial_number

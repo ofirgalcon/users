@@ -43,6 +43,8 @@ class Users_model extends Eloquent
         'linked_full_name',
         'linked_timestamp',
         'autologin_enabled',
+        'secure_token',
+        'volume_owner',
         'current_user',
         'is_hidden',
     ];

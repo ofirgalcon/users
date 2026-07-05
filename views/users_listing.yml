@@ -9,6 +9,7 @@ table:
   - column: reportdata.serial_number
     i18n_header: serial
   - {i18n_header: users.record_name, column: local_users.record_name}
+  - {i18n_header: users.current_user, column: local_users.current_user, formatter: formatUsersCurrentUserBoolean}
   - {i18n_header: users.real_name, column: local_users.real_name}
   - {i18n_header: users.unique_id, column: local_users.unique_id}
   - {i18n_header: users.password_hint, column: local_users.password_hint}
@@ -19,6 +20,8 @@ table:
   - {i18n_header: users.screenshare_access, column: local_users.screenshare_access, formatter: formatUsersYesNoSSH}
   - {i18n_header: users.autologin_enabled, column: local_users.autologin_enabled, formatter: formatUsersYesNoSSH}
   - {i18n_header: users.is_hidden, column: local_users.is_hidden, formatter: formatUsersYesNoSSH}
+  - {i18n_header: users.secure_token, column: local_users.secure_token, formatter: formatUsersYesNoGood}
+  - {i18n_header: users.volume_owner, column: local_users.volume_owner, formatter: formatUsersYesNoGood}
   - {i18n_header: users.user_shell, column: local_users.user_shell}
   - {i18n_header: users.generated_uuid, column: local_users.generated_uuid}
   - {i18n_header: users.last_login_timestamp, column: local_users.last_login_timestamp, formatter: timestampToMoment}

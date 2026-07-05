@@ -46,6 +46,20 @@
     "current_user": "Current User",
     "autologin_enabled": "Auto Login Enabled",
     "is_hidden": "Is Hidden",
+    "secure_token": "Secure Token",
+    "volume_owner": "System Volume Owner",
+    "secure_token_disabled_users": "Users Without Secure Token",
+    "volume_owner_disabled_users": "Users Not System Volume Owner",
+    "no_autologin_enabled_users": "No Users with Auto Login Enabled",
     "no_is_hidden": "No Hidden User Accounts",
-    "no_autologin_enabled_users": "No Users with Auto Login Enabled"
+    "no_secure_token_disabled_users": "No Users Without Secure Token",
+    "no_volume_owner_disabled_users": "No Users Not System Volume Owner",
+    "tooltips": {
+        "admin_users": "Shows administrator users. Each entry displays the username and count.",
+        "ssh_users": "Shows SSH users. Each entry displays the username and count.",
+        "screensharing_users": "Shows screensharing users. Each entry displays the username and count.",
+        "autologin_users": "Shows autologin users. Each entry displays the username and count.",
+        "secure_token_disabled_users": "Shows users without Secure Token enabled. Each entry displays the username and count.",
+        "volume_owner_disabled_users": "Shows users that are not APFS System Volume Owners. Each entry displays the username and count."
+    }
 }

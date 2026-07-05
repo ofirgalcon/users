@@ -1,0 +1,10 @@
+type: scrollbox
+widget_id: users-secure-token-disabled-widget
+api_url: /module/users/secure_token_disabled_users
+i18n_title: users.secure_token_disabled_users
+i18n_tooltip: users.tooltips.secure_token_disabled_users
+icon: fa-key
+listing_link: /show/listing/users/users
+search_key: record_name
+i18nEmptyResult: users.no_secure_token_disabled_users
+badge: count

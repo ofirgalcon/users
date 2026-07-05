@@ -27,3 +27,7 @@ widgets:
         view: users_autologin_enabled_widget
     users_is_hidden:
         view: users_is_hidden_widget
+    users_secure_token_disabled:
+        view: users_secure_token_disabled_widget
+    users_volume_owner_disabled:
+        view: users_volume_owner_disabled_widget

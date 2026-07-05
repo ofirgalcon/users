@@ -2,6 +2,7 @@ type: scrollbox
 widget_id: users-admins-widget
 api_url: /module/users/admin_users
 i18n_title: users.admin_users
+i18n_tooltip: users.tooltips.admin_users
 icon: fa-user-circle-o
 listing_link: /show/listing/users/users
 search_key: record_name
