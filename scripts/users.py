@@ -62,8 +62,12 @@ def readPlist(plist):
         plist = plist.encode()
 
     try:
-
-        return plistlib.loads(plist)
+        return plistlib.readPlistFromString(plist)
+    except AttributeError:
+        try:
+            return plistlib.loads(plist)
+        except Exception:
+            return {}
     except Exception:
         return {}
 
@@ -441,8 +445,11 @@ def main():
 
     cachedir = '%s/cache' % os.path.dirname(os.path.realpath(__file__))
     output_plist = os.path.join(cachedir, 'users.plist')
-    with open(output_plist, 'wb') as fp:
-        plistlib.dump(result, fp, fmt=plistlib.FMT_XML)
+    try:
+        plistlib.writePlist(result, output_plist)
+    except Exception:
+        with open(output_plist, 'wb') as fp:
+            plistlib.dump(result, fp, fmt=plistlib.FMT_XML)
 
 if __name__ == "__main__":
     main()
